@@ -24,5 +24,6 @@ Route::get('departments/{id}', 'DepartmentController@show');
 Route::post('departments', 'DepartmentController@store');
 
 //User route
-Route::post('register', 'UserController@create');
+Route::middleware('auth:api')->post('register', 'UserController@create');
 Route::get('users', 'UserController@index');
+Route::post('login', 'Auth\LoginController@login');

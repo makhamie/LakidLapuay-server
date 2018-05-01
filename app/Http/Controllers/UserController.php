@@ -13,18 +13,30 @@ class UserController extends Controller
             return ['message' => 'email is already used'];
         }
 
-        // if($request->)
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'address' => $request->get('address'),
-            'facebook' => $request->get('facebook'),
-            'instagram' => $request->get('instagram'),
-            'line' => $request->get('line'),
-            'department_id' => $request->get('department_id'),
-            'role' => $request->get('role'),
-            'password' => Hash::make($request->get('name')),
-        ]);
+        // return [
+        //     'message' => $request->user()->role
+        // ];
+
+        if($request->user()->role == 'admin') {
+            $user = User::create([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'address' => $request->get('address'),
+                'facebook' => $request->get('facebook'),
+                'instagram' => $request->get('instagram'),
+                'line' => $request->get('line'),
+                'department_id' => $request->get('department_id'),
+                'role' => $request->get('role'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+            return [
+                'message' => 'Create user successful'
+            ];
+        }
+        return [
+            'message' => 'Cannot create user'
+        ];
+       
         // return User::create($request->all());
     }
 
