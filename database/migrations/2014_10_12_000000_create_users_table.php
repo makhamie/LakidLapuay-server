@@ -13,17 +13,24 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
+        Schema::create('departments', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('facebook')->unique();
-            $table->text('instagram')->unique();
-            $table->text('line')->unique();
+            $table->string('instagram')->unique();
+            $table->string('line')->unique();
             $table->string('password');
             $table->text('address');
-            $table->text('department');
-            $table->string('role');
+            $table->unsignedInteger('department_id');
+            $table->foreign('department_id')->references('id')->on('departments');
+            $table->enum('role', ['admin', 'supervisor', 'subordinate']);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -36,6 +43,7 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('departments');
         Schema::dropIfExists('users');
     }
 }
