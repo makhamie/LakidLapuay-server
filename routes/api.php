@@ -16,3 +16,13 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+//Department route
+Route::get('departments', 'DepartmentController@index');
+Route::get('departments/{id}', 'DepartmentController@show');
+Route::post('departments', 'DepartmentController@store');
+
+//User route
+Route::post('register', 'UserController@create');
+Route::get('users', 'UserController@index');
