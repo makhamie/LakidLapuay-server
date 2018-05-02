@@ -39,4 +39,9 @@ Route::group(['middleware' => ['auth:api']], function() {
   // Relation routes
   Route::post('relation', 'RelationController@store');
   Route::get('relations', 'RelationController@index');
+
+  // Tasks routes
+  Route::get('/tasks', 'TaskController@index');
+  Route::get('/tasks/{id}', 'TaskController@show');
+  Route::post('/tasks', 'TaskController@store');
 });
