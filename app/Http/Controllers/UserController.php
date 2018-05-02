@@ -64,6 +64,13 @@ class UserController extends Controller
        ];
     }
 
+    public function get_user(Request $request) {
+        return [
+            'message' => 'successful',
+            'data' => $request->user()
+        ];
+    }
+
     public function change_detail(Request $request, $id) {
         $user = User::where(['id' => $id])->first();
             

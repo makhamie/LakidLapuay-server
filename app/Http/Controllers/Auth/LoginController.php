@@ -46,17 +46,14 @@ class LoginController extends Controller
         $password = $request->get('password');
 
         $user = User::where('email', $email)->first();
-        
-        // return [
-        //     'password' => $password,
-        //     'hash' => $user->password,
-        //     'check' => Hash::check($password, $user->password)
-        // ];
+    
         if($user and Hash::check($password, $user->password)) {
             return [
-                'token' => $user->createToken('token')->accessToken,
                 'message' => 'Login successful',
-                'role' => $user->role
+                'data' => [
+                    'token' => $user->createToken('token')->accessToken,
+                    'role' => $user->role
+                ]
             ];
         }
         return [
