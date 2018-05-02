@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('user-by-role', 'UserController@get_user_by_role');
   Route::get('user', 'UserController@get_user');
 
+
   // Department routes
   Route::get('departments', 'DepartmentController@index');
   Route::get('departments/{id}', 'DepartmentController@show');
