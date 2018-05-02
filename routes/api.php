@@ -29,7 +29,7 @@ Route::middleware('auth:api')->put('user-department/{id}', 'UserController@chang
 Route::middleware('auth:api')->get('users', 'UserController@index');
 Route::middleware('auth:api')->put('user/{id}', 'UserController@change_detail');
 Route::middleware('auth:api')->get('user-by-role', 'UserController@get_user_by_role');
-Route::middleware('auth:api')->get('user', 'UserController@get_user');
+Route::middleware('auth:api')->get('user', 'UserController@get_user'); 
 Route::post('login', 'Auth\LoginController@login');
 
 //Relation route
