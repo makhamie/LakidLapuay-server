@@ -23,8 +23,22 @@ class TaskController extends Controller
         $created =Task::create($request->all());
         return [
             'message' => 'Create Task successful',
-            'result' => $created
+            'result' => $created,
+            'success' => true
         ];
+    }
+
+    public function get_supervisor_task(Request $request) 
+    {
+        $supervisor = $request->user();
+        if($supervisor->role == 'supervisor') {
+            $all_task = Task::where(['owner_id' => $supervisor->id])->get();
+            return [
+                'message' => 'successful',
+                'result' => $all_task,
+                'success' => true
+            ];
+        }
     }
     //
 }

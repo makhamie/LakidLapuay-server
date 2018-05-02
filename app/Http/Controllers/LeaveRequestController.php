@@ -24,4 +24,54 @@ class LeaveRequestController extends Controller
             'success' => true
         ];
     }
+
+    //Wait for test
+
+    public function substitute_approve(Request $request) {
+        $leave_request_id = $request->get('leave_request_id');
+        $leave_request = LeaveRequest::find($leave_request_id);
+        $leave_request->update([
+            'approved_by_substitute_at' => new Date()
+        ]);
+        return [
+            'message' => 'Substituter approve',
+            'result' => $leave_request,
+            'success' => true
+        ];
+    }
+
+    //Wait for test
+
+    public function supervisor_approve(Request $request) {
+        $leave_request_id = $request->get('leave_request_id');
+        $leave_request = LeaveRequest::find($leave_request_id);
+        $leave_request->update([
+            'approved_by_supervisor_at' => new Date()
+        ]);
+        return [
+            'message' => 'Supervisor approve',
+            'result' => $leave_request,
+            'success' => true
+        ];
+    }
+
+    public function get_leave_requests(Request $request) {
+        $subordinate = $request->user();
+        if($subordinate->role == 'subordinate') {
+            $subordinate_leave_requests = LeaveRequest::where(['requester_id', $subordinate->id])->get();
+            return [
+                'message' => 'success',
+                'result' => $subordinate_leave_requests,
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need subordinate privilege',
+            'success' => false
+        ];
+    }
+
+    // public function get_substitute_request(Request $request) {
+        
+    // }
 }
