@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('facebook')->unique();
             $table->string('instagram')->unique();
             $table->string('line')->unique();
+            $table->string('profile_picture')->default('https://upload.wikimedia.org/wikipedia/commons/9/93/Default_profile_picture_%28male%29_on_Facebook.jpg');
             $table->string('password');
             $table->text('address');
             $table->unsignedInteger('department_id');
