@@ -20,9 +20,10 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
-        Department::create($request->all());
+        $created = Department::create($request->all());
         return [
-            'message' => 'Create Department successful'
+            'message' => 'Create Department successful',
+            'result' => $created
         ];
     }
     //

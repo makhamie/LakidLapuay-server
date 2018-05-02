@@ -21,7 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/login', 'Auth\LoginController@login');
 
 Route::group(['middleware' => ['auth:api']], function() {
-
   // User routes
   Route::post('/register', 'UserController@create');
   Route::put('user-department/{id}', 'UserController@change_department');
@@ -39,4 +38,8 @@ Route::group(['middleware' => ['auth:api']], function() {
   // Relation routes
   Route::post('relation', 'RelationController@store');
   Route::get('relations', 'RelationController@index');
+
+  // LeaveRequest routes
+  Route::post('leave-request', 'LeaveRequestController@store');
+
 });
