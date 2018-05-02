@@ -16,7 +16,7 @@ class CreateLeaveRequestsTable extends Migration
         Schema::create('leave_requests', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('requester_id');
-            $table->unsignedInteger('substitute_id');
+            $table->unsignedInteger('substitute_id')->default(null);
             $table->foreign('requester_id')->references('id')->on('users');
             $table->foreign('substitute_id')->references('id')->on('users');
             $table->dateTime('start');
@@ -24,8 +24,8 @@ class CreateLeaveRequestsTable extends Migration
             $table->unsignedInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->text('reason');
-            $table->dateTime('approved_by_substitute_at');
-            $table->dateTime('approved_by_supervisor_at');
+            $table->dateTime('approved_by_substitute_at')->default(null);
+            $table->dateTime('approved_by_supervisor_at')->default(null);
             $table->timestamps();
         });
     }

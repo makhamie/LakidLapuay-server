@@ -11,11 +11,13 @@ class RelationController extends Controller
         if ($request->user()->role == 'admin') {
             Relation::create($request->all());
             return [
-                "message" => "Subordinator ".$request->get('subordinate_id')." has been assign to Supervisor ".$request->get('supervisor_id')."."
+                "message" => "Subordinator ".$request->get('subordinate_id')." has been assign to Supervisor ".$request->get('supervisor_id').".",
+                "success" => true
             ];
         }
         return [
-            "message" => "Need admin privilege"
+            "message" => "Need admin privilege",
+            "success" => false
         ];   
     }
 
@@ -24,11 +26,13 @@ class RelationController extends Controller
             $relations = Relation::all();
             return [
                 "message" => "sucessful",
-                "data" => $relations
+                "result" => $relations,
+                "success" => true
             ];
         }
         return [
-            "message" => "Need admin privilege"
+            "message" => "Need admin privilege",
+            "success" => false
         ];
     }
 }

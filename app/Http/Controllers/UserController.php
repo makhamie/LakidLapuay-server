@@ -13,9 +13,6 @@ class UserController extends Controller
             return ['message' => 'email is already used'];
         }
 
-        // return [
-        //     'message' => $request->user()->role
-        // ];
 
         if($request->user()->role == 'admin') {
             $user = User::create([
@@ -30,14 +27,17 @@ class UserController extends Controller
                 'password' => Hash::make($request->get('password')),
             ]);
             return [
-                'message' => 'Create user successful'
+                'message' => 'Create user successful',
+                'result' => $user,
+                'success' => true
             ];
         }
         return [
-            'message' => 'Cannot create user'
+            'message' => 'Need admin privilege',
+            'success' => false
         ];
        
-        // return User::create($request->all());
+
     }
 
     public function index() {
@@ -51,23 +51,27 @@ class UserController extends Controller
                 $users = User::where(['role' => $role])->get();
                 return [
                     "message" => "success",
-                    "data" => $users
+                    "result" => $users,
+                    "success" => true
                 ];
             }
             return [
-                "message" => "Please Specify role"
+                "message" => "Please Specify role",
+                "success" => false
             ];
         }
             
        return [
-           "message" => 'Need Admin Privilege'
+           "message" => 'Need Admin Privilege',
+           "success" => false
        ];
     }
 
     public function get_user(Request $request) {
         return [
             'message' => 'successful',
-            'data' => $request->user()
+            'result' => $request->user(),
+            'success' => true
         ];
     }
 

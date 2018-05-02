@@ -16,7 +16,8 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('responsible_id');
-            $table->unsignedInteger('substitute_id');
+            $table->text('description');
+            $table->unsignedInteger('substitute_id')->default(null);
             $table->foreign('responsible_id')->references('id')->on('users');
             $table->foreign('substitute_id')->references('id')->on('users');
             $table->dateTime('substituted_at');
