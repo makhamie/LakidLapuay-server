@@ -26,7 +26,14 @@ class RelationController extends Controller
         $supervisor = $request->user();
         if($supervisor->role == 'supervisor') {
             $all_subordinate_id = Relation::select('subordinate_id')->where(['supervisor_id' => $supervisor->id])->get();
-            $all_subordinate = User::whereIn(['id', $all_subordinate_id])->get();
+            $subordinate_id_array = [];
+            for ($i = 0; $i<count($all_subordinate_id); $i++) {
+                $subordinate_id_array[$i] = $all_subordinate_id[$i]->subordinate_id;
+            }
+            // return [
+            //     "resule" => $array
+            // ];
+            $all_subordinate = User::whereIn('id', $subordinate_id_array)->get();
             return [
                 "message" => "successful",
                 "result" => $all_subordinate,
