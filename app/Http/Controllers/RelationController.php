@@ -26,14 +26,25 @@ class RelationController extends Controller
         if ($request->user()->role == 'admin') {
             $subordinate = $request->get('subordinate_id');
             $supervisor = $request->get('supervisor_id');
-            $request_relation = Relation::where(['subordinate_id'=> $subordinate])->get()->first();
-            $request_relation->update([
-                'supervisor_id' => $supervisor,
-            ]);
-            return [
-                "message" => 'Update supervisor of this user',
-                "success" => true
-            ];
+            $request_relation = Relation::where(['subordinate_id'=> $subordinate])->first();
+            if ($request_relation == null) {
+                $request_relation = Relation::create($request->all());
+                return [
+                    "message" => 'Successfully create relation',
+                    "success" => true,
+                    "results" => $request_relation
+                ];
+            } else {
+                $request_relation->update([
+                    'supervisor_id' => $supervisor,
+                ]);
+                return [
+                    "message" => 'Update supervisor of this user',
+                    "success" => true,
+                    "results" => $request_relation
+                ];
+            }
+           
         }
         return [
             "message" => "Need admin privilege",
@@ -65,6 +76,7 @@ class RelationController extends Controller
         ];
     }
 
+
     public function get_collations(Request $request) {
         $subordinate = $request->user();
         if($subordinate->role == 'subordinate') {
@@ -86,6 +98,35 @@ class RelationController extends Controller
         }
         return [
             "message" => "Need subordinate privilege",
+            "success" => false
+        ];
+    }
+
+    public function get_supervisor_by_id(Request $request) {
+        if($request->has('id')) {
+            $subordinate_id = $request->input('id');
+            // $relation = Relation::with('user')->where(['subordinate_id' => $subordinate_id])->first();
+            $relation = Relation::where(['subordinate_id' => $subordinate_id])->first();
+            if ($relation != null) {
+                $supervisor = $relation->supervisor;
+                return [
+                    "message" => "Get supervisor successful",
+                    "results" => $supervisor,
+                    "success" => true
+                ];
+            }
+            return [
+                "message" => 'No relation could be found',
+                "results" => [
+                    "id" => -1,
+                    "name" => "No Supervisor"
+                ],
+                "success" => true
+            ];
+            
+        }
+        return [
+            "message" => "Request don't have id in query string",
             "success" => false
         ];
     }
