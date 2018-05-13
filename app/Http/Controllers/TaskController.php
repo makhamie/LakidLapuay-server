@@ -23,7 +23,7 @@ class TaskController extends Controller
         $created =Task::create($request->all());
         return [
             'message' => 'Create Task successful',
-            'result' => $created,
+            'results' => $created,
             'success' => true
         ];
     }
@@ -35,7 +35,7 @@ class TaskController extends Controller
             $all_task = Task::where(['supervisor_id' => $supervisor->id])->get();
             return [
                 'message' => 'successful',
-                'result' => $all_task,
+                'results' => $all_task,
                 'success' => true
             ];
         }

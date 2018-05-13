@@ -36,7 +36,7 @@ class RelationController extends Controller
             $all_subordinate = User::whereIn('id', $subordinate_id_array)->get();
             return [
                 "message" => "successful",
-                "result" => $all_subordinate,
+                "results" => $all_subordinate,
                 "success" => true
             ];
         }
@@ -46,14 +46,22 @@ class RelationController extends Controller
         ];
     }
 
-    public function get_friends(Request $request) {
+    public function get_collations(Request $request) {
         $subordinate = $request->user();
         if($subordinate->role == 'subordinate') {
-            $supervisor_id = Relation::select('subordinate_id')->where(['supervisor_id' => $subordinate->id])->get();
-            $friends = User::where(['id' => $supervisor_id]);
+            $supervisor_id = Relation::select('supervisor_id')->where(['subordinate_id' => $subordinate->id])->get()->first();
+            $id_subordinates = Relation::select('subordinate_id')->where(['supervisor_id' => $supervisor_id->supervisor_id])->get();
+            $subordinate_id_array = [];
+            for ($i = 0; $i<count($id_subordinates) ; $i++) {
+                if($id_subordinates[$i]->subordinate_id != $subordinate->id){
+                    $subordinate_id_array[$i] = $id_subordinates[$i]->subordinate_id;    
+                }
+                
+            }
+            $all_subordinate = User::select('id','name')->whereIn('id', $subordinate_id_array)->get();
             return [
                 "message" => "successful",
-                "result" => $friends,
+                "results" => $all_subordinate,
                 "success" => true
             ];
         }
@@ -68,7 +76,7 @@ class RelationController extends Controller
             $relations = Relation::all();
             return [
                 "message" => "sucessful",
-                "result" => $relations,
+                "results" => $relations,
                 "success" => true
             ];
         }

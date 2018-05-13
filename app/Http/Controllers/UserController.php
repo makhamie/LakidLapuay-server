@@ -23,7 +23,7 @@ class UserController extends Controller
             ]);
             return [
                 'message' => 'Create user successful',
-                'result' => $user,
+                'results' => $user,
                 'success' => true
             ];
         // }
@@ -66,7 +66,7 @@ class UserController extends Controller
                 $users = User::where(['role' => $role])->get();
                 return [
                     "message" => "success",
-                    "result" => $users,
+                    "results" => $users,
                     "success" => true
                 ];
             }
@@ -85,7 +85,7 @@ class UserController extends Controller
     public function admin_get_user(Request $request) {
         return [
             'message' => 'successful',
-            'result' => $request->user(),
+            'results' => $request->user(),
             'success' => true
         ];
     }

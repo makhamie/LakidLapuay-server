@@ -23,7 +23,7 @@ class DepartmentController extends Controller
         $created = Department::create($request->all());
         return [
             'message' => 'Create Department successful',
-            'result' => $created
+            'results' => $created
         ];
     }
     //

@@ -25,7 +25,6 @@ Route::post('/departments', 'DepartmentController@store');
 Route::group(['middleware' => ['auth:api']], function() {
   // User routes
   // Route::post('/register', 'UserController@create');
-  // Route::put('/user-department/{id}', 'UserController@change_department');
   Route::get('/admin/users', 'UserController@index');
   Route::put('/admin/user/{id}', 'UserController@admin_manage_user');
   Route::get('/admin/user-by-role', 'UserController@admin_get_user_by_role');
@@ -39,10 +38,10 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/departments/{id}', 'DepartmentController@show');
 
   // Relation routes
-  Route::post('/relation', 'RelationController@store');
-  Route::get('/relations', 'RelationController@index');
-  Route::get('/relations/get-subordinates', 'RelationController@get_subordinates'); //must edit
-  Route::get('/relations/get-friends', 'RelationController@get_friends');  //must edit
+  Route::post('/admin/relation', 'RelationController@store');
+  Route::get('/admin/relations', 'RelationController@index');
+  Route::get('/supervisor-relations/subordinates', 'RelationController@get_subordinates'); 
+  Route::get('/subordinate-relations/collations', 'RelationController@get_collations');
 
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');

@@ -20,7 +20,7 @@ class LeaveRequestController extends Controller
         ]);
         return [
             'message' => 'Create leave request successful',
-            'result' => $created,
+            'results' => $created,
             'success' => true
         ];
     }
@@ -35,7 +35,7 @@ class LeaveRequestController extends Controller
         ]);
         return [
             'message' => 'Substituter approve',
-            'result' => $leave_request,
+            'results' => $leave_request,
             'success' => true
         ];
     }
@@ -50,7 +50,7 @@ class LeaveRequestController extends Controller
         ]);
         return [
             'message' => 'Supervisor approve',
-            'result' => $leave_request,
+            'results' => $leave_request,
             'success' => true
         ];
     }
@@ -61,7 +61,7 @@ class LeaveRequestController extends Controller
             $subordinate_leave_requests = LeaveRequest::where(['requester_id', $subordinate->id])->get();
             return [
                 'message' => 'success',
-                'result' => $subordinate_leave_requests,
+                'results' => $subordinate_leave_requests,
                 'success' => true
             ];
         }
