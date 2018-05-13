@@ -76,8 +76,20 @@ class UserController extends Controller
         ];
     }
 
-    public function index() {
-        return User::with('department')->get();
+    public function index(Request $request) {
+        $PER_PAGE = 10;
+        $page = 1;
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        return [
+                'messages' => 'Get user successful',
+                'results' => [
+                    'users' => User::with('department')->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => User::all()->count()
+                ],
+                'success' => true
+            ];
         // return User::all()->department();
     }
 
