@@ -112,6 +112,14 @@ class UserController extends Controller
         ];
     }
 
+    public function get_user_role(Request $request) {
+        return [
+            'message' => 'successful',
+            'results' => $request->user()->role,
+            'success' => true
+        ];
+    }
+
     public function admin_manage_user(Request $request, $id) {
         if($request->user()->role == 'admin') {
             $user = User::where(['id' => $id])->first();
@@ -132,17 +140,21 @@ class UserController extends Controller
                     ]);
                 }
                 return [
-                    'message' => 'Sucessfully Change user '.$user->name.' detail'
+                    'message' => 'Sucessfully Change user '.$user->name.' detail',
+                    'results' => $user,
+                    'success' => true
                 ];
                 
             }else {
                 return [
-                    'message' => 'Cannot find user'
+                    'message' => 'Cannot find user',
+                    'success' => false
                 ];
             }
         }
         return [
-            'message' => 'Permission denied'
+            'message' => 'Permission denied',
+            'success' => false
         ]; 
     }
 

@@ -25,6 +25,7 @@ Route::post('/admin/departments', 'DepartmentController@store');
 Route::group(['middleware' => ['auth:api']], function() {
   // User routes
   // Route::post('/register', 'UserController@create');
+  Route::get('/user-role', 'UserController@get_user_role');
   Route::get('/admin/users', 'UserController@index');
   Route::put('/admin/user/{id}', 'UserController@admin_manage_user');
   Route::get('/admin/user-by-role', 'UserController@admin_get_user_by_role');
@@ -36,7 +37,6 @@ Route::group(['middleware' => ['auth:api']], function() {
   // Department routes
   Route::get('/admin/departments', 'DepartmentController@index');
   Route::get('/admin/departments/{id}', 'DepartmentController@show');
-
 
   // Relation routes
   //TEST
