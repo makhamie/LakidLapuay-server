@@ -8,10 +8,11 @@ class Task extends Model
 {
     //
     protected $fillable = [
-        'responsible_id',
+        'subordinate_id',
+        'name',
         'description',
-        'substitute_id',
-        'substituted_at',
+        'supervisor_id',
+        'started_at',
         'finished_at'
     ];
 }

@@ -13,6 +13,7 @@ class Relation extends Model
      * @var array
      */
     protected $fillable = [
-        'supervisor_id', 'subordinate_id'
+        'supervisor_id',
+        'subordinate_id'
     ];
 }

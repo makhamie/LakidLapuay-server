@@ -13,7 +13,7 @@ class UserController extends Controller
             return ['message' => 'email is already used'];
         }
         
-        if($request->user()->role == 'admin') {
+        // if($request->user()->role == 'admin') {
             $user = User::create([
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
@@ -30,11 +30,11 @@ class UserController extends Controller
                 'result' => $user,
                 'success' => true
             ];
-        }
-        return [
-            'message' => 'Need admin privilege',
-            'success' => false
-        ];
+        // }
+        // return [
+        //     'message' => 'Need admin privilege',
+        //     'success' => false
+        // ];
        
 
     }

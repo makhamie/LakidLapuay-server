@@ -32,7 +32,7 @@ class TaskController extends Controller
     {
         $supervisor = $request->user();
         if($supervisor->role == 'supervisor') {
-            $all_task = Task::where(['owner_id' => $supervisor->id])->get();
+            $all_task = Task::where(['supervisor_id' => $supervisor->id])->get();
             return [
                 'message' => 'successful',
                 'result' => $all_task,

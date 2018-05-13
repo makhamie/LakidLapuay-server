@@ -15,10 +15,10 @@ class CreateRelationsTable extends Migration
     {
         Schema::create('relations', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('supervisor_id');
             $table->unsignedInteger('subordinate_id');
-            $table->foreign('supervisor_id')->references('id')->on('users');
             $table->foreign('subordinate_id')->references('id')->on('users');
+            $table->unsignedInteger('supervisor_id');
+            $table->foreign('supervisor_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateRelationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('relations');
+        Schema::dropIfExists('relation');
     }
 }
