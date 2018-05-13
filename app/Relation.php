@@ -16,4 +16,12 @@ class Relation extends Model
         'supervisor_id',
         'subordinate_id'
     ];
+
+    public function supervisor() {
+        return $this->hasOne('App\User', 'id', 'supervisor_id');
+    }
+
+    public function subordinate() {
+        return $this->hasOne('App\User', 'id', 'subordinate_id');
+    }
 }
