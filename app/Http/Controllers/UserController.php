@@ -56,7 +56,8 @@ class UserController extends Controller
     }
 
     public function index() {
-        return User::all();
+        return User::with('department')->get();
+        // return User::all()->department();
     }
 
     public function admin_get_user_by_role(Request $request) {
