@@ -26,10 +26,11 @@ Route::group(['middleware' => ['auth:api']], function() {
   // User routes
   // Route::post('/register', 'UserController@create');
   // Route::put('/user-department/{id}', 'UserController@change_department');
-  Route::get('/users', 'UserController@index');
-  // Route::put('/user/{id}', 'UserController@change_detail');
-  // Route::get('/user-by-role', 'UserController@get_user_by_role');
-  Route::get('/user', 'UserController@get_user');
+  Route::get('/admin/users', 'UserController@index');
+  Route::put('/admin/user/{id}', 'UserController@admin_manage_user');
+  Route::get('/admin/user-by-role', 'UserController@admin_get_user_by_role');
+  Route::get('/admin/user', 'UserController@admin_get_user');
+  Route::put('/user-update', 'UserController@user_update_profile');
 //   Route::get('', '')
 
 
