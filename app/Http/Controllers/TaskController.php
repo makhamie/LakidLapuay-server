@@ -61,21 +61,25 @@ class TaskController extends Controller
         ];
     }
     
-    public function update_subordinate(Request $request) {
+    public function update_task(Request $request)
+    {
         $user = $request->user();
+        if($user->role == 'supervisor') {
+            $task_id = $request->get('task_id');
+            $task = Task::find($task_id);
 
+            $task->update([
+                'subordinate_id' => $request->get('subordinate_id')
+            ]);
+            return [
+                'task' => $task,
+                'message' => 'This task has already updated',
+                'success' => true
+            ];
+        }
         return [
-            "user" => $user,
-            "task" => $task
+            'message' => 'Need supervisor privilege',
+            'success' => false
         ];
     }
-    // public function update_subordinate(Request $request) {
-    //     $user = $request->user();
-
-    //     return [
-    //         "user" => $user,
-    //         "task" => $task
-    //     ];
-    // }
-
 }

@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/tasks/{id}', 'TaskController@show');
   Route::get('/tasks/supervisor-tasks', 'TaskController@get_supervisor_tasks');
   Route::post('/task', 'TaskController@store');
-  Route::get('/task/update_subordinate', 'TaskController@update_subordinate');
+  Route::post('/task/update_task', 'TaskController@update_task');
   
   // LeaveRequest routes
   // Route::post('/leave-request', 'LeaveRequestController@store');
