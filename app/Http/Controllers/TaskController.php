@@ -31,7 +31,6 @@ class TaskController extends Controller
                 'description' => $request->get('description'),
                 'supervisor_id' => $user_id,
             ]);
-            // $created =Task::create($request->all());
             return [
                 'message' => 'Create Task successful',
                 'results' => $created,
@@ -57,6 +56,51 @@ class TaskController extends Controller
         }
         return [
             'message' => 'Need supervisor privilege',
+            'success' => false
+        ];
+    }
+
+    public function get_subordinate_tasks(Request $request) 
+    {
+        $subordinate = $request->user();
+        if($subordinate->role == 'subordinate') {
+            $all_task = Task::where(['subordinate_id' => $subordinate->id])->get();
+            return [
+                'message' => 'successful',
+                'results' => $all_task,
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need subordinate privilege',
+            'success' => false
+        ];
+    }
+
+    public function get_tasks_in_range(Request $request) 
+    {
+        $subordinate = $request->user();
+        if($subordinate->role == 'subordinate') {
+            if($request->has('start') && $request->has('finish')) {
+                $start = $request->input('start');
+                $finish = $request->input('finish');
+                $all_task = Task::all();
+                // $all_task = Task::where('started_at' >= $start AND 'started_at' >= $finish)->get();
+                return [
+                    'message' => 'successful',
+                    'start' => $start,
+                    'finish' => $finish,
+                    'results' => $all_task,
+                    'success' => true
+                ];
+            }
+            return [
+                'message' => 'Need range',
+            ];
+
+        }
+        return [
+            'message' => 'Need subordinate privilege',
             'success' => false
         ];
     }
