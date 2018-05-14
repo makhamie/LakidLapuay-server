@@ -22,6 +22,25 @@ class RelationController extends Controller
         ];   
     }
 
+    public function update_user_relation(Request $request) {
+        if ($request->user()->role == 'admin') {
+            $subordinate = $request->get('subordinate_id');
+            $supervisor = $request->get('supervisor_id');
+            $request_relation = Relation::where(['subordinate_id'=> $subordinate])->get()->first();
+            $request_relation->update([
+                'supervisor_id' => $supervisor,
+            ]);
+            return [
+                "message" => 'Update supervisor of this user',
+                "success" => true
+            ];
+        }
+        return [
+            "message" => "Need admin privilege",
+            "success" => false
+        ];   
+    }
+
     public function get_subordinates(Request $request) {
         $supervisor = $request->user();
         if($supervisor->role == 'supervisor') {

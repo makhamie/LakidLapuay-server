@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/register', 'UserController@create');
-Route::post('/departments', 'DepartmentController@store');
+Route::post('/admin/departments', 'DepartmentController@store');
   
 Route::group(['middleware' => ['auth:api']], function() {
   // User routes
@@ -34,11 +34,13 @@ Route::group(['middleware' => ['auth:api']], function() {
 
 
   // Department routes
-  Route::get('/departments', 'DepartmentController@index');
-  Route::get('/departments/{id}', 'DepartmentController@show');
+  Route::get('/admin/departments', 'DepartmentController@index');
+  Route::get('/admin/departments/{id}', 'DepartmentController@show');
 
   // Relation routes
+  //TEST
   Route::post('/admin/relation', 'RelationController@store');
+  Route::put('admin/update-user-relation', 'RelationController@update_user_relation');
   Route::get('/admin/relations', 'RelationController@index');
   Route::get('/supervisor-relations/subordinates', 'RelationController@get_subordinates'); 
   Route::get('/subordinate-relations/collations', 'RelationController@get_collations');

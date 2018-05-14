@@ -93,12 +93,22 @@ class UserController extends Controller
     public function admin_manage_user(Request $request, $id) {
         if($request->user()->role == 'admin') {
             $user = User::where(['id' => $id])->first();
-                
+            // return [
+            //             'message' => $user
+            // ]; 
             if($user) {
-                $user->update([
-                    'department_id' => $request->get('department_id'),
-                    'role' => $request->get('role')
-                ]);
+                $new_department = $request->get('department_id');
+                $new_role = $request->get('role');
+                if($new_department){
+                    $user->update([
+                        'department_id' => $new_department
+                    ]);
+                }
+                if($new_role){
+                    $user->update([
+                        'role' => $new_role
+                    ]);
+                }
                 return [
                     'message' => 'Sucessfully Change user '.$user->name.' detail'
                 ];
@@ -109,6 +119,9 @@ class UserController extends Controller
                 ];
             }
         }
+        return [
+            'message' => 'Permission denied'
+        ]; 
     }
 
 //     public function change_department(Request $request, $id) {
