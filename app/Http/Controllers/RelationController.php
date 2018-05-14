@@ -132,9 +132,7 @@ class RelationController extends Controller
             $all_subordinate = User::select('id','name')->whereIn('id', $subordinate_id_array)->get();
             return [
                 "message" => "successful",
-                "subordinate" => $all_subordinate,
-                // "task" => $tasks,
-                // "results" => $all_task_of_their,
+                "results" => $all_subordinate,
                 "success" => true
             ];
         }
