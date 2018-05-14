@@ -45,12 +45,12 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/get-subordinates', 'RelationController@get_subordinates'); 
   Route::get('/get-collations', 'RelationController@get_collations');
 
-  
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');
   Route::get('/tasks/{id}', 'TaskController@show');
   Route::get('/tasks/supervisor-tasks', 'TaskController@get_supervisor_tasks');
   Route::post('/task', 'TaskController@store');
+  Route::get('/task/update_subordinate', 'TaskController@update_subordinate');
   
   // LeaveRequest routes
   // Route::post('/leave-request', 'LeaveRequestController@store');
