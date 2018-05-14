@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/admin/relations', 'RelationController@index');
   Route::get('/get-subordinates', 'RelationController@get_subordinates'); 
   Route::get('/get-collations', 'RelationController@get_collations');
-  
+  Route::get('/relations/admin/get-user-supervisor', 'RelationController@get_supervisor_by_id');
 
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');

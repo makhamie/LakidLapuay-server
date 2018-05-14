@@ -91,6 +91,26 @@ class RelationController extends Controller
         ];
     }
 
+    public function get_supervisor_by_id(Request $request) {
+        if($request->has('id')) {
+            $subordinate_id = $request->input('id');
+            // $relation = Relation::with('user')->where(['subordinate_id' => $subordinate_id])->first();
+            $supervisor = Relation::where(['subordinate_id' => $subordinate_id])->first()->supervisor;
+            // return [
+            //     "message" => $relation
+            // ];
+            return [
+                "message" => "Get supervisor successful",
+                "results" => $supervisor,
+                "success" => true
+            ];
+        }
+        return [
+            "message" => "Request don't have id in query string",
+            "success" => false
+        ];
+    }
+
     public function index(Request $request) {
         if($request->user()->role == 'admin') {
             $relations = Relation::all();
