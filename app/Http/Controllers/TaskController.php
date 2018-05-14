@@ -18,14 +18,13 @@ class TaskController extends Controller
             return [
                 'messages' => 'Get task successful',
                 'results' => [
-                    'users' => Task::skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'tasks' => Task::skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
                     'count' => Task::all()->count()
                 ],
                 'success' => true
             ];
         }
         return Task::all();
-        // return Task::all();
     }
 
     public function show($id)
@@ -61,34 +60,42 @@ class TaskController extends Controller
 
     public function get_supervisor_tasks(Request $request) 
     {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
         $supervisor = $request->user();
-        if($supervisor->role == 'supervisor') {
-            $all_task = Task::where(['supervisor_id' => $supervisor->id])->get();
+        if($supervisor->role == 'supervisor' && $request->has('page')) {
+            $page = $request->input('page');
             return [
                 'message' => 'successful',
-                'results' => $all_task,
+                'results' => [
+                    'tasks' => Task::where(['supervisor_id' => $supervisor->id])->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => Task::where(['supervisor_id' => $supervisor->id])->count()
+                ],
                 'success' => true
             ];
         }
         return [
-            'message' => 'Need supervisor privilege',
+            'message' => 'Need supervisor privilege or page',
             'success' => false
         ];
     }
 
     public function get_subordinate_tasks(Request $request) 
     {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
         $subordinate = $request->user();
-        if($subordinate->role == 'subordinate') {
-            $all_task = Task::where(['subordinate_id' => $subordinate->id])->get();
+        if($subordinate->role == 'subordinate' && $request->has('page')) {
+            $page = $request->input('page');
             return [
                 'message' => 'successful',
-                'results' => $all_task,
+                'results' => [
+                    'tasks' => Task::where(['subordinate_id' => $subordinate->id])->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => Task::where(['subordinate_id' => $subordinate->id])->count()
+                ],
                 'success' => true
             ];
         }
         return [
-            'message' => 'Need subordinate privilege',
+            'message' => 'Need subordinate privilege or page',
             'success' => false
         ];
     }
@@ -118,7 +125,7 @@ class TaskController extends Controller
             'success' => false
         ];
     }
-    
+
     public function update_task(Request $request)
     {
         $user = $request->user();
