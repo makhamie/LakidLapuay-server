@@ -47,9 +47,9 @@ Route::group(['middleware' => ['auth:api']], function() {
 
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');
-  Route::get('/tasks/get_supervisor_tasks', 'TaskController@get_supervisor_tasks');
-  Route::get('/tasks/get_subordinate_tasks', 'TaskController@get_subordinate_tasks');
-  Route::get('/tasks/get_tasks_in_range', 'TaskController@get_tasks_in_range');
+  Route::get('/tasks/get-supervisor-tasks', 'TaskController@get_supervisor_tasks');
+  Route::get('/tasks/get-subordinate-tasks', 'TaskController@get_subordinate_tasks');
+  Route::get('/tasks/get-tasks-in-range', 'TaskController@get_tasks_in_range');
   Route::get('/tasks/{id}', 'TaskController@show');
   Route::post('/task', 'TaskController@store');
   Route::post('/task/update_task', 'TaskController@update_task');

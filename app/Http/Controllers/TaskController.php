@@ -11,6 +11,21 @@ class TaskController extends Controller
 {
     public function index()
     {
+        // $PER_PAGE = Config::get('constants.PER_PAGE');
+        // $page = 1;
+        // if ($request->has('page')) {
+        //     $page = $request->input('page');
+        // }
+        // return [
+        //         'messages' => 'Get task successful',
+        //         'results' => [
+        //             'users' => User::with('department')->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+        //             'count' => User::all()->count()
+        //         ],
+        //         'success' => true
+        //     ];
+        // return User::all()->department();
+
         return Task::all();
     }
 
