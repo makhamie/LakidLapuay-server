@@ -20,15 +20,22 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
-        $created =Task::create($request->all());
+        $user = $request->user();
+        if($user->role == 'supervisor' || $user->role == 'subordinate') {
+            $created =Task::create($request->all());
+            return [
+                'message' => 'Create Task successful',
+                'results' => $created,
+                'success' => true
+            ];
+        }
         return [
-            'message' => 'Create Task successful',
-            'results' => $created,
-            'success' => true
+            'message' => 'Need user privilege',
+            'success' => false
         ];
     }
 
-    public function get_supervisor_task(Request $request) 
+    public function get_supervisor_tasks(Request $request) 
     {
         $supervisor = $request->user();
         if($supervisor->role == 'supervisor') {
@@ -39,6 +46,10 @@ class TaskController extends Controller
                 'success' => true
             ];
         }
+        return [
+            'message' => 'Need supervisor privilege',
+            'success' => false
+        ];
     }
     //
 }

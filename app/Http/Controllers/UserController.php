@@ -115,9 +115,6 @@ class UserController extends Controller
     public function admin_manage_user(Request $request, $id) {
         if($request->user()->role == 'admin') {
             $user = User::where(['id' => $id])->first();
-            // return [
-            //             'message' => $user
-            // ]; 
             if($user) {
                 $new_department = $request->get('department_id');
                 $new_role = $request->get('role');

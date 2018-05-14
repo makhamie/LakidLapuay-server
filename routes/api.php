@@ -28,30 +28,28 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/admin/users', 'UserController@index');
   Route::put('/admin/user/{id}', 'UserController@admin_manage_user');
   Route::get('/admin/user-by-role', 'UserController@admin_get_user_by_role');
+  Route::get('/admin/get-available-supervisor', 'UserController@get_available_supervisor');
   Route::get('/get-user', 'UserController@admin_get_user');
   Route::put('/user-update', 'UserController@user_update_profile');
-  //TODO admin get all supervisor in a department 
-  Route::get('/admin/get-available-supervisor', 'UserController@get_available_supervisor');
-
+  
   // Department routes
   Route::get('/admin/departments', 'DepartmentController@index');
   Route::get('/admin/departments/{id}', 'DepartmentController@show');
 
-
   // Relation routes
-  //TEST
   Route::post('/admin/relation', 'RelationController@store');
-  Route::put('admin/update-user-relation', 'RelationController@update_user_relation');
+  Route::put('/admin/update-user-relation', 'RelationController@update_user_relation');
   Route::get('/admin/relations', 'RelationController@index');
+  Route::get('/admin/relations/get-user-supervisor', 'RelationController@get_supervisor_by_id');
   Route::get('/get-subordinates', 'RelationController@get_subordinates'); 
   Route::get('/get-collations', 'RelationController@get_collations');
-  Route::get('/admin/relations/get-user-supervisor', 'RelationController@get_supervisor_by_id');
+
   
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');
   Route::get('/tasks/{id}', 'TaskController@show');
-  Route::get('/tasks/supervisor-tasks', 'TaskController@get_supervisor_task');
-  // Route::post('/task', 'TaskController@store');
+  Route::get('/tasks/supervisor-tasks', 'TaskController@get_supervisor_tasks');
+  Route::post('/task', 'TaskController@store');
   
   // LeaveRequest routes
   // Route::post('/leave-request', 'LeaveRequestController@store');
