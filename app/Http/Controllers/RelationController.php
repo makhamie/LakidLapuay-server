@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Relation;
 use App\User;
+use App\Task;
 
 class RelationController extends Controller
 {
@@ -101,6 +102,48 @@ class RelationController extends Controller
             "success" => false
         ];
     }
+
+    public function get_available_collation_by_range(Request $request) {
+        $subordinate = $request->user();
+        if($subordinate->role == 'subordinate') {
+            if($request->has('start')){
+                $startDate = $request->input('start');
+            }
+            if($request->has('finish')){
+                $finishDate = $request->input('finish');
+            }
+            $supervisor_id = Relation::select('supervisor_id')->where(['subordinate_id' => $subordinate->id])->get()->first();
+            $id_subordinates = Relation::select('subordinate_id')->where(['supervisor_id' => $supervisor_id->supervisor_id])->get();
+            $subordinate_id_array = [];
+            for ($i = 0; $i<count($id_subordinates) ; $i++) {
+                if($id_subordinates[$i]->subordinate_id != $subordinate->id){
+                    $subordinate_task =  Task::where(['subordinate_id' => $id_subordinates[$i]->subordinate_id])
+                                        ->where(function ($query) use ($startDate, $finishDate) {
+                                            $query->whereBetween('started_at',array($startDate,$finishDate))
+                                                    ->orWhereBetween('finished_at',array($startDate,$finishDate));
+                                        })
+                                        ->first();
+                    if($subordinate_task == null) {
+                        $subordinate_id_array[$i] = $id_subordinates[$i]->subordinate_id;    
+                    }
+                }
+                
+            }
+            $all_subordinate = User::select('id','name')->whereIn('id', $subordinate_id_array)->get();
+            return [
+                "message" => "successful",
+                "subordinate" => $all_subordinate,
+                // "task" => $tasks,
+                // "results" => $all_task_of_their,
+                "success" => true
+            ];
+        }
+        return [
+            "message" => "Need subordinate privilege",
+            "success" => false
+        ];
+    }
+
 
     public function get_supervisor_by_id(Request $request) {
         if($request->has('id')) {

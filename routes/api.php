@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/admin/relations/get-user-supervisor', 'RelationController@get_supervisor_by_id');
   Route::get('/get-subordinates', 'RelationController@get_subordinates'); 
   Route::get('/get-collations', 'RelationController@get_collations');
+  Route::get('/get-collations-by-range', 'RelationController@get_available_collation_by_range');
 
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');
@@ -60,6 +61,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::put('/response-leave-request', 'LeaveRequestController@response_leave_request');
   //Get all leave request of this supervisor
   Route::get('/get-leave-requests', 'LeaveRequestController@get_leave_requests');
+
 
   // LeaveTask routes
   Route::post('/leave-task', 'LeaveTaskController@store');
