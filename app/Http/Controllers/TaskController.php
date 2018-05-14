@@ -6,27 +6,26 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use App\Task as Task;
+use Config;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // $PER_PAGE = Config::get('constants.PER_PAGE');
-        // $page = 1;
-        // if ($request->has('page')) {
-        //     $page = $request->input('page');
-        // }
-        // return [
-        //         'messages' => 'Get task successful',
-        //         'results' => [
-        //             'users' => User::with('department')->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
-        //             'count' => User::all()->count()
-        //         ],
-        //         'success' => true
-        //     ];
-        // return User::all()->department();
-
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        if ($request->has('page')) {
+            $page = $request->input('page');
+            return [
+                'messages' => 'Get task successful',
+                'results' => [
+                    'users' => Task::skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => Task::all()->count()
+                ],
+                'success' => true
+            ];
+        }
         return Task::all();
+        // return Task::all();
     }
 
     public function show($id)
