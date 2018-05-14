@@ -55,6 +55,27 @@ class UserController extends Controller
         ];
     }
 
+    public function get_available_supervisor(Request $request) {
+        if ($request->user()->role == 'admin') {
+            if($request->has('department_id')) {
+                $department_id = $request->input('department_id');
+                return [
+                    'message' => 'successful',
+                    'results' => User::where(['role' => 'supervisor'])->where(['department_id' => $department_id])->get(),
+                    'success' => true    
+                ];
+            }
+            return [
+                'message' => 'department_id not found in query string',
+                'success' => false
+            ];
+        }
+        return [
+            'message' => 'need admin authorization',
+            'success' => false
+        ];
+    }
+
     public function index() {
         return User::with('department')->get();
         // return User::all()->department();
