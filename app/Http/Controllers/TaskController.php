@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 use App\Task as Task;
 
@@ -18,6 +19,7 @@ class TaskController extends Controller
         return Task::find($id);
     }
 
+    // create task
     public function store(Request $request)
     {
         $user = $request->user();
@@ -77,20 +79,18 @@ class TaskController extends Controller
         ];
     }
 
+    // create task
     public function get_tasks_in_range(Request $request) 
     {
         $subordinate = $request->user();
         if($subordinate->role == 'subordinate') {
             if($request->has('start') && $request->has('finish')) {
-                $start = $request->input('start');
-                $finish = $request->input('finish');
-                $all_task = Task::all();
-                // $all_task = Task::where('started_at' >= $start AND 'started_at' >= $finish)->get();
+                $startDate = new Carbon($request->input('start'));
+                $finishDate = new Carbon($request->input('finish'));
+                $tasks = Task::where(['subordinate_id' => $subordinate->id])->whereBetween('started_at',array($request->input('start'),$request->input('finish')))->orWhereBetween('finished_at',array($request->input('start'),$request->input('finish')))->where(['subordinate_id' => $subordinate->id])->get();
                 return [
                     'message' => 'successful',
-                    'start' => $start,
-                    'finish' => $finish,
-                    'results' => $all_task,
+                    'results' => $tasks,
                     'success' => true
                 ];
             }
