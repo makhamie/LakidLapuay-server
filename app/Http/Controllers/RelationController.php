@@ -65,6 +65,7 @@ class RelationController extends Controller
         ];
     }
 
+
     public function get_collations(Request $request) {
         $subordinate = $request->user();
         if($subordinate->role == 'subordinate') {

@@ -42,8 +42,9 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::post('/admin/relation', 'RelationController@store');
   Route::put('admin/update-user-relation', 'RelationController@update_user_relation');
   Route::get('/admin/relations', 'RelationController@index');
-  Route::get('/supervisor-relations/subordinates', 'RelationController@get_subordinates'); 
-  Route::get('/subordinate-relations/collations', 'RelationController@get_collations');
+  Route::get('/get-subordinates', 'RelationController@get_subordinates'); 
+  Route::get('/get-collations', 'RelationController@get_collations');
+  
 
   // Tasks routes
   Route::get('/tasks', 'TaskController@index');
