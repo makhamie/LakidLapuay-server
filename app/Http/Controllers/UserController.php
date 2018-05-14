@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User as User;
 use Illuminate\Support\Facades\Hash;
+use Config;
+// use App\config\constanst as Config;
 
 class UserController extends Controller
 {
@@ -76,9 +78,21 @@ class UserController extends Controller
         ];
     }
 
-    public function index() {
-        return User::with('department')->get();
-        // return User::all()->department();
+    public function index(Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        return [
+                'messages' => 'Get user successful',
+                'results' => [
+                    'users' => User::with('department')->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => User::all()->count()
+                ],
+                'success' => true
+            ];
+        return User::all()->department();
     }
 
     public function admin_get_user_by_role(Request $request) {
