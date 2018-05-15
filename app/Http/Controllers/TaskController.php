@@ -106,9 +106,14 @@ class TaskController extends Controller
         $subordinate = $request->user();
         if($subordinate->role == 'subordinate') {
             if($request->has('start') && $request->has('finish')) {
-                $startDate = new Carbon($request->input('start'));
-                $finishDate = new Carbon($request->input('finish'));
-                $tasks = Task::where(['subordinate_id' => $subordinate->id])->whereBetween('started_at',array($request->input('start'),$request->input('finish')))->orWhereBetween('finished_at',array($request->input('start'),$request->input('finish')))->where(['subordinate_id' => $subordinate->id])->get();
+                $startDate = $request->input('start');
+                $finishDate = $request->input('finish');
+                $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                ->where(function ($query) use ($startDate,$finishDate){
+                    $query->whereBetween('started_at',array($startDate,$finishDate))
+                    ->orWhereBetween('finished_at',array($startDate,$finishDate));
+                })
+                ->get();
                 return [
                     'message' => 'successful',
                     'results' => $tasks,
