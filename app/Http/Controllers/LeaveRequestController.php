@@ -28,31 +28,32 @@ class LeaveRequestController extends Controller
 
     //Wait for test
 
-    public function substitute_approve(Request $request) {
+    public function response_leave_request(Request $request) {
         $leave_request_id = $request->get('leave_request_id');
         $leave_request = LeaveRequest::find($leave_request_id);
-        $leave_request->update([
-            'approved_at' => new Date()
-        ]);
+        $request_action = $request->get('action');
+        if($request_action == 'approved'){
+            $leave_request->update([
+                'approved_at' => now()
+            ]);
+            return [
+                'message' => 'Supervisor approved',
+                'results' => $leave_request,
+                'success' => true
+            ];
+        }else if($request_action == 'rejected'){
+            $leave_request->update([
+                'rejected_at' => now()
+            ]);
+            return [
+                'message' => 'Supervisor rejected',
+                'results' => $leave_request,
+                'success' => true
+            ];
+        }
         return [
-            'message' => 'Substituter approve',
-            'results' => $leave_request,
-            'success' => true
-        ];
-    }
-
-    //Wait for test
-
-    public function supervisor_approve(Request $request) {
-        $leave_request_id = $request->get('leave_request_id');
-        $leave_request = LeaveRequest::find($leave_request_id);
-        $leave_request->update([
-            'approved_at' => new Date()
-        ]);
-        return [
-            'message' => 'Supervisor approve',
-            'results' => $leave_request,
-            'success' => true
+            'message' => 'Action error',
+           'success' => false
         ];
     }
 

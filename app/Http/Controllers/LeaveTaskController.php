@@ -22,6 +22,36 @@ class LeaveTaskController extends Controller
         ];
     }
 
+    //Wait for test
+
+    public function response_leave_task(Request $request) {
+        $leave_task_id = $request->input('leave_task_id');
+        $leave_request = LeaveTask::find($leave_task_id);
+        $request_action = $request->get('action');
+        if($request_action == 'approved'){
+            $leave_request->update([
+                'approved_at' => now()
+            ]);
+            return [
+                'message' => 'Substituter accepted this request',
+                'results' => $leave_request,
+                'success' => true
+            ];
+        }else if($request_action == 'rejected'){
+            $leave_request->update([
+                'rejected_at' => now()
+            ]);
+            return [
+                'message' => 'Substituter rejected this request',
+                'results' => $leave_request,
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Action error',
+           'success' => false
+        ];
+    }
    
     public function get_leave_tasks_by_leave_request(Request $request) {
         $user = $request->user();

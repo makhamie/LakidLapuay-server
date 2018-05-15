@@ -54,12 +54,16 @@ Route::group(['middleware' => ['auth:api']], function() {
   
   // LeaveRequest routes
   Route::post('/leave-request', 'LeaveRequestController@store');
-  // Route::put('/leave-requests/substitute-approve', 'LeaveRequestController@substitute_approve');
-  // Route::put('/leave-requests/supervisor-approve', 'LeaveRequestController@supervisor_approve');
+  //Supervisor response leave request
+  Route::put('/response-leave-request', 'LeaveRequestController@response_leave_request');
+  //Get all leave request of this supervisor
   Route::get('/get-leave-requests', 'LeaveRequestController@get_leave_requests');
 
   // LeaveTask routes
   Route::post('/leave-task', 'LeaveTaskController@store');
+  //Subordinate response leave task
+  Route::put('/response-leave-task', 'LeaveTaskController@response_leave_task');
+  //Get all leave task by leave request id
   Route::get('/leave-tasks-by-leave-request', 'LeaveTaskController@get_leave_tasks_by_leave_request');
 
 });
