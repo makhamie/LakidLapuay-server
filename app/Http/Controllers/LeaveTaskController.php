@@ -10,19 +10,20 @@ class LeaveTaskController extends Controller
     //
     public function store(Request $request) {
         $request_user = $request->user();
-        // $created = LeaveTask::insert($request->all());
-        $created = LeaveTask::insert([
-            [
-                'leave_request_id' => 1,
-                'task_id' => 1,
-                'substitute_id' => $request->get('substitute_id')
-            ],
-            [
-                'leave_request_id' => 2,
-                'task_id' => 2,
-                'substitute_id' => $request->get('substitute_id')
-            ],
-        ]);
+        $array = $request->get('leave_task_array');
+        $created = LeaveTask::insert($array);
+        // $created = LeaveTask::insert([
+        //     [
+        //         'leave_request_id' => 1,
+        //         'task_id' => 1,
+        //         'substitute_id' => $request->get('substitute_id')
+        //     ],
+        //     [
+        //         'leave_request_id' => 2,
+        //         'task_id' => 2,
+        //         'substitute_id' => $request->get('substitute_id')
+        //     ],
+        // ]);
         // $created = LeaveTask::create([
         //     'leave_request_id' => $request->get('leave_request_id'),
         //     'task_id' => $request->get('task_id'),
