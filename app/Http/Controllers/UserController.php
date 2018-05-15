@@ -14,7 +14,7 @@ class UserController extends Controller
         if(User::where(['email' => $request->get('email')])->first()) {
             return ['message' => 'email is already used'];
         }
-        
+
         // if($request->user()->role == 'admin') {
             $user = User::create([
                 'name' => $request->get('name'),
@@ -33,22 +33,26 @@ class UserController extends Controller
         //     'message' => 'Need admin privilege',
         //     'success' => false
         // ];
-       
+
 
     }
 
     public function user_update_profile(Request $request) {
         if($request->user()) {
             $user = $request->user();
-            
+
             $user->update([
+                'department_id' => $request->get('department_id'),
                 'address' => $request->get('address'),
                 'facebook' => $request->get('facebook'),
                 'instagram' => $request->get('instagram'),
-                'line' => $request->get('line')
-                // 'profile_picture' => $request->get('profile_picture'),
+                'line' => $request->get('line'),
+                'profile_picture' => $request->get('profile_picture')
             ]);
             return [
+                'result' => [
+                  'user' => $request->user()
+                ],
                 'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id')
             ];
         }
@@ -64,7 +68,7 @@ class UserController extends Controller
                 return [
                     'message' => 'successful',
                     'results' => User::where(['role' => 'supervisor'])->where(['department_id' => $department_id])->get(),
-                    'success' => true    
+                    'success' => true
                 ];
             }
             return [
@@ -111,7 +115,7 @@ class UserController extends Controller
                 "success" => false
             ];
         }
-            
+
        return [
            "message" => 'Need Admin Privilege',
            "success" => false
@@ -155,7 +159,7 @@ class UserController extends Controller
                     'results' => $user,
                     'success' => true
                 ];
-                
+
             }else {
                 return [
                     'message' => 'Cannot find user',
@@ -166,13 +170,13 @@ class UserController extends Controller
         return [
             'message' => 'Permission denied',
             'success' => false
-        ]; 
+        ];
     }
 
 //     public function change_department(Request $request, $id) {
 //         if($request->user()->role == 'admin') {
 //             $user = User::where(['id' => $id])->first();
-            
+
 //             if($user) {
 //                 $user->update([
 //                     'department_id' => $request->get('department_id')
@@ -180,7 +184,7 @@ class UserController extends Controller
 //                 return [
 //                     'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id')
 //                 ];
-                
+
 //             }else {
 //                 return [
 //                     'message' => 'Cannot find user'
