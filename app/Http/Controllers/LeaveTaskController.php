@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\LeaveTask;
+use App\LeaveRequest;
+use Config;
 
 class LeaveTaskController extends Controller
 {
@@ -61,14 +63,89 @@ class LeaveTaskController extends Controller
         ];
     }
    
+    public function get_leave_tasks_of_substitute (Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        $count = 0;
+        $user = $request->user();
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        if($user->role == 'subordinate') {
+            if($request->has('request')){
+                if($request->input('request') == 'pending'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'approved'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNotNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'rejected'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNull('approved_at')->whereNotNull('rejected_at');
+                }
+            }else{
+                $leave_tasks = LeaveTask::where(['substitute_id' => $user->id]);
+            }
+            $count = $leave_tasks->count();
+            return [
+                'message' => 'success',
+                'results' => [
+                    'count' => $count,
+                    'leave_tasks' => $leave_tasks->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get()
+                ],
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need user privilege',
+            'success' => false
+        ];
+    }
+
+    public function get_leave_tasks_of_subordinate (Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        $count = 0;
+        $user = $request->user();
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        if($user->role == 'subordinate') {
+
+            $id_leave_requests = LeaveRequest::where(['subordinate_id' => $user->id])->get(); 
+            $leave_request_array = [];
+            for ($i = 0; $i<count($id_leave_requests); $i++) {
+                $leave_request_array[$i] = $id_leave_requests[$i]->id;
+            }
+
+            if($request->has('request')){
+                if($request->input('request') == 'pending'){
+                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'approved'){
+                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNotNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'rejected'){
+                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNotNull('rejected_at');
+                }
+            }else{
+                $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array);
+            }
+            $count = $leave_tasks->count();
+            return [
+                'message' => 'success',
+                'results' => [
+                    'count' => $count,
+                    'leave_tasks' => $leave_tasks->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get()
+                ],
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need user privilege',
+            'success' => false
+        ];
+    }
+
     public function get_leave_tasks_by_leave_request(Request $request) {
         $user = $request->user();
         if($user->role == 'subordinate' || $user->role == 'supervisor') {
             $leave_request_id = $request->input('id');
-            $type_leave = $request->input('request');
-            // $all_leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
-           
-            // $count_all = LeaveTask::where(['leave_request_id' => $leave_request_id])->count();
             if($request->has('request')){
                 if($request->input('request') == 'pending'){
                     $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNull('rejected_at');
