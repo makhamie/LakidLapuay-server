@@ -49,7 +49,7 @@ class LeaveTaskController extends Controller
         }
         return [
             'message' => 'Action error',
-           'success' => false
+            'success' => false
         ];
     }
    

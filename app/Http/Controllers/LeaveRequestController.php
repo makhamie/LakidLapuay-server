@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\LeaveRequest;
+use App\LeaveTask;
 use App\Relation;
 
 class LeaveRequestController extends Controller
@@ -65,7 +66,7 @@ class LeaveRequestController extends Controller
             for ($i = 0; $i<count($all_subordinate_id); $i++) {
                 $subordinate_id_array[$i] = $all_subordinate_id[$i]->subordinate_id;
             }
-            $leave_requests = LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->get();
+            $leave_requests = LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at')->get();
             return [
                 'message' => 'success',
                 'results' => $leave_requests,
