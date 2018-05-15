@@ -12,18 +12,6 @@ class LeaveTaskController extends Controller
         $request_user = $request->user();
         $array = $request->get('leave_task_array');
         $created = LeaveTask::insert($array);
-        // $created = LeaveTask::insert([
-        //     [
-        //         'leave_request_id' => 1,
-        //         'task_id' => 1,
-        //         'substitute_id' => $request->get('substitute_id')
-        //     ],
-        //     [
-        //         'leave_request_id' => 2,
-        //         'task_id' => 2,
-        //         'substitute_id' => $request->get('substitute_id')
-        //     ],
-        // ]);
         // $created = LeaveTask::create([
         //     'leave_request_id' => $request->get('leave_request_id'),
         //     'task_id' => $request->get('task_id'),
@@ -36,6 +24,8 @@ class LeaveTaskController extends Controller
         ];
     }
 
+
+
     //Wait for test
 
     public function response_leave_task(Request $request) {
@@ -46,6 +36,10 @@ class LeaveTaskController extends Controller
             $leave_request->update([
                 'approved_at' => now()
             ]);
+            $all_leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request->id]);
+            $leave_tasks_of_leave_request = $all_leave_tasks->get();
+            $count = $all_leave_tasks->count();
+            $count_unreponsed_task = $all_leave_tasks->whereNull('approved_at')->whereNull('rejected_at')->count();
             return [
                 'message' => 'Substituter accepted this request',
                 'results' => $leave_request,
@@ -71,10 +65,29 @@ class LeaveTaskController extends Controller
         $user = $request->user();
         if($user->role == 'subordinate' || $user->role == 'supervisor') {
             $leave_request_id = $request->input('id');
-            $leave_tasks_of_leave_request = LeaveTask::where(['leave_request_id' => $leave_request_id])->get();
+            $type_leave = $request->input('request');
+            // $all_leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
+           
+            // $count_all = LeaveTask::where(['leave_request_id' => $leave_request_id])->count();
+            if($request->has('request')){
+                if($request->input('request') == 'pending'){
+                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'approved'){
+                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNotNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'rejected'){
+                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNotNull('rejected_at');
+                }
+            }else{
+                $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
+            }
+            
             return [
                 'message' => 'success',
-                'results' => $leave_tasks_of_leave_request,
+                'results' => [
+                    'count' => $leave_tasks->count(),
+                    'list' => $leave_tasks->get()
+                ],
+                // 'count' => $count,
                 'success' => true
             ];
         }
