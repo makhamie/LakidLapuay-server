@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use App\Task as Task;
+use App\LeaveTask;
+
 use Config;
 
 class TaskController extends Controller
@@ -109,14 +111,25 @@ class TaskController extends Controller
                 $startDate = $request->input('start');
                 $finishDate = $request->input('finish');
                 $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                ->where(function ($query) use ($startDate,$finishDate){
-                    $query->whereBetween('started_at',array($startDate,$finishDate))
-                    ->orWhereBetween('finished_at',array($startDate,$finishDate));
-                })
-                ->get();
+                                ->where(function ($query) use ($startDate,$finishDate){
+                                    $query->whereBetween('started_at',array($startDate,$finishDate))
+                                    ->orWhereBetween('finished_at',array($startDate,$finishDate));
+                                })
+                                ->get();
+                $tasks_array = [];
+    
+                for ($i = 0; $i<count($tasks) ; $i++) {
+                    if(LeaveTask::where('task_id', '=', $tasks[$i]->id)->doesntExist()){
+                        $tasks_array[$i] = Task::find($tasks[$i]->id);
+                    }
+                    
+                }
                 return [
                     'message' => 'successful',
-                    'results' => $tasks,
+                    'results' => $tasks_array,
+                    // 'array' => $leave_tasks_array,
+                    // 'leave_tasks' => $leave_tasks,
+                    // 'leave_tasks_array' => $leave_tasks_array,
                     'success' => true
                 ];
             }
