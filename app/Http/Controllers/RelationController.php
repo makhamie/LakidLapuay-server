@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Relation;
 use App\User;
 use App\Task;
+use App\LeaveRequest;
 
 class RelationController extends Controller
 {
@@ -117,17 +118,22 @@ class RelationController extends Controller
             $subordinate_id_array = [];
             for ($i = 0; $i<count($id_subordinates) ; $i++) {
                 if($id_subordinates[$i]->subordinate_id != $subordinate->id){
-                    $subordinate_task =  Task::where(['subordinate_id' => $id_subordinates[$i]->subordinate_id])
+                    $subordinate_task = Task::where(['subordinate_id' => $id_subordinates[$i]->subordinate_id])
                                         ->where(function ($query) use ($startDate, $finishDate) {
                                             $query->whereBetween('started_at',array($startDate,$finishDate))
                                                     ->orWhereBetween('finished_at',array($startDate,$finishDate));
                                         })
                                         ->first();
-                    if($subordinate_task == null) {
+                    $subordinate_leave = LeaveRequest::where(['subordinate_id' => $id_subordinates[$i]->subordinate_id])
+                                        ->where(function ($query) use ($startDate, $finishDate) {
+                                            $query->whereBetween('started_at',array($startDate,$finishDate))
+                                                    ->orWhereBetween('finished_at',array($startDate,$finishDate));
+                                        })
+                                        ->first();
+                    if($subordinate_task == null && $subordinate_leave == null) {
                         $subordinate_id_array[$i] = $id_subordinates[$i]->subordinate_id;    
                     }
                 }
-                
             }
             $all_subordinate = User::select('id','name')->whereIn('id', $subordinate_id_array)->get();
             return [
