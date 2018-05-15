@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\LeaveRequest;
 use App\LeaveTask;
 use App\Relation;
+use Config;
 
 class LeaveRequestController extends Controller
 {
@@ -59,6 +60,12 @@ class LeaveRequestController extends Controller
     }
 
     public function get_leave_requests(Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        $count = 0;
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
         $user = $request->user();
         if($user->role == 'supervisor') {
             $all_subordinate_id = Relation::select('subordinate_id')->where(['supervisor_id' => $user->id])->get();
@@ -66,10 +73,14 @@ class LeaveRequestController extends Controller
             for ($i = 0; $i<count($all_subordinate_id); $i++) {
                 $subordinate_id_array[$i] = $all_subordinate_id[$i]->subordinate_id;
             }
-            $leave_requests = LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at')->get();
+            $leave_requests =  LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at');
+            $count = $leave_requests->count();
             return [
                 'message' => 'success',
-                'results' => $leave_requests,
+                'results' => [
+                    'leave-requests' => $leave_requests->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => $count
+                ],
                 'success' => true
             ];
         }
