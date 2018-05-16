@@ -71,7 +71,18 @@ class LeaveTaskController extends Controller
             $page = $request->input('page');
         }
         if($user->role == 'subordinate') {
-            $leave_tasks = LeaveTask::where(['substitute_id' => $user->id]);
+            
+            if($request->has('request')){
+                if($request->input('request') == 'pending'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'approved'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNotNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'rejected'){
+                    $leave_tasks = LeaveTask::where(['substitute_id' => $user->id])->whereNull('approved_at')->whereNotNull('rejected_at');
+                }
+            }else{
+                $leave_tasks = LeaveTask::where(['substitute_id' => $user->id]);
+            }
             $count = $leave_tasks->count();
             return [
                 'message' => 'success',
