@@ -67,7 +67,7 @@ class UserController extends Controller
                 'password' => Hash::make($request->get('password'))            ]);
             return [
                 'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id'),
-                'result' => $user
+                'results' => $user
             ];
         }
         return [

@@ -125,6 +125,8 @@ class RelationController extends Controller
                                         })
                                         ->first();
                     $subordinate_leave = LeaveRequest::where(['subordinate_id' => $id_subordinates[$i]->subordinate_id])
+                                        // ->whereNotNull(['approve_at'])
+                                        // ->whereNull(['rejected_at'])
                                         ->where(function ($query) use ($startDate, $finishDate) {
                                             $query->whereBetween('started_at',array($startDate,$finishDate))
                                                     ->orWhereBetween('finished_at',array($startDate,$finishDate));
