@@ -13,18 +13,30 @@ class LeaveRequestController extends Controller
     //
     public function store(Request $request) {
         $request_user = $request->user();
-        $created = LeaveRequest::create([
-            'subordinate_id' => $request_user->id,
-            'reason' => $request->get('reason'),
-            // 'approved_at' => $request->get('approved_at'),
-            'started_at' => $request->get('started_at'),
-            'finished_at' => $request->get('finished_at'),
-            // 'rejected_at' => $request->get('rejected_at')
-        ]);
+        $startDate = $request->get('started_at');
+        $finishDate = $request->get('finished_at');
+        //เช็คว่าช่วงเวลาดังกล่าว User ไม่ได้มี leave request อยู่แล้ว
+        $user_request = LeaveRequest::whereBetween('started_at', array($startDate,$finishDate))
+                    ->orWhereBetween('finished_at', array($startDate,$finishDate))->count();
+        //และ User ไม่ได้เป็น substitute ของ Leave Task อันไหน 
+        if($user_request == 0){
+            $created = LeaveRequest::create([
+                'subordinate_id' => $request_user->id,
+                'reason' => $request->get('reason'),
+                // 'approved_at' => $request->get('approved_at'),
+                'started_at' => $request->get('started_at'),
+                'finished_at' => $request->get('finished_at'),
+                // 'rejected_at' => $request->get('rejected_at')
+            ]);
+            return [
+                'message' => 'Create leave request successful',
+                'results' => $created,
+                'success' => true
+            ];
+        }
         return [
-            'message' => 'Create leave request successful',
-            'results' => $created,
-            'success' => true
+            'message' => 'You has leave request in this range already',
+            'success' => false
         ];
     }
 
