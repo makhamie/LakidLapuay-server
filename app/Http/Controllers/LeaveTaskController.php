@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\LeaveTask;
+use Config;
 
 class LeaveTaskController extends Controller
 {
@@ -61,14 +62,58 @@ class LeaveTaskController extends Controller
         ];
     }
    
+    public function get_leave_tasks_of_substitute (Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        $count = 0;
+        $user = $request->user();
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        if($user->role == 'subordinate') {
+            $leave_tasks = LeaveTask::where(['substitute_id' => $user->id]);
+            $count = $leave_tasks->count();
+            return [
+                'message' => 'success',
+                'results' => [
+                    'count' => $count,
+                    'leave_tasks' => $leave_tasks->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get()
+                ],
+                // 'count' => $count,
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need user privilege',
+            'success' => false
+        ];
+    }
+
+    // public function get_leave_tasks_by_owner (Request $request) {
+    //     $user = $request->user();
+    //     if($user->role == 'subordinate') {
+    //         $leave_tasks = LeaveTask::where(['substitute_id' => $user->id]);
+            
+    //         return [
+    //             'message' => 'success',
+    //             'results' => [
+    //                 'count' => $leave_tasks->count(),
+    //                 'list' => $leave_tasks->get()
+    //             ],
+    //             // 'count' => $count,
+    //             'success' => true
+    //         ];
+    //     }
+    //     return [
+    //         'message' => 'Need user privilege',
+    //         'success' => false
+    //     ];
+    // }
+
     public function get_leave_tasks_by_leave_request(Request $request) {
         $user = $request->user();
         if($user->role == 'subordinate' || $user->role == 'supervisor') {
             $leave_request_id = $request->input('id');
-            $type_leave = $request->input('request');
-            // $all_leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
-           
-            // $count_all = LeaveTask::where(['leave_request_id' => $leave_request_id])->count();
             if($request->has('request')){
                 if($request->input('request') == 'pending'){
                     $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNull('rejected_at');
