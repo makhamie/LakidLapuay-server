@@ -53,7 +53,6 @@ class UserController extends Controller
                   'user' => $request->user()
                 ],
                 'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id')
-                'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id'),
             ];
         }
         return [
