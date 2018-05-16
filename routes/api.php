@@ -70,5 +70,6 @@ Route::group(['middleware' => ['auth:api']], function() {
   //Get all leave task by leave request id
   Route::get('/leave-tasks-by-leave-request', 'LeaveTaskController@get_leave_tasks_by_leave_request');
   Route::get('/get-leave-tasks-by-substitute','LeaveTaskController@get_leave_tasks_of_substitute');
+  Route::get('/get-leave-tasks-by-subordinator','LeaveTaskController@get_leave_tasks_of_subordinate');
 
 });
