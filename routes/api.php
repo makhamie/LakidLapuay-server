@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/admin/get-available-supervisor', 'UserController@get_available_supervisor');
   Route::get('/get-user', 'UserController@admin_get_user');
   Route::put('/user-update', 'UserController@user_update_profile');
+  Route::put('/change-password', 'UserController@change_password');
   
   // Department routes
   Route::get('/admin/departments', 'DepartmentController@index');
@@ -53,7 +54,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/tasks/get-tasks-in-range', 'TaskController@get_tasks_in_range');
   Route::get('/tasks/{id}', 'TaskController@show');
   Route::post('/task', 'TaskController@store');
-  Route::post('/task/update_task', 'TaskController@update_task');
+  Route::put('/task/update-task', 'TaskController@update_task');
   
   // LeaveRequest routes
   Route::post('/leave-request', 'LeaveRequestController@store');

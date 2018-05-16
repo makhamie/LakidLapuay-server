@@ -40,7 +40,6 @@ class UserController extends Controller
     public function user_update_profile(Request $request) {
         if($request->user()) {
             $user = $request->user();
-            
             $user->update([
                 'address' => $request->get('address'),
                 'facebook' => $request->get('facebook'),
@@ -49,7 +48,22 @@ class UserController extends Controller
                 // 'profile_picture' => $request->get('profile_picture'),
             ]);
             return [
-                'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id')
+                'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id'),
+            ];
+        }
+        return [
+            'message' => 'Need authorization'
+        ];
+    }
+
+    public function change_password(Request $request) {
+        if($request->user()) {
+            $user = $request->user();
+            $user->update([
+                'password' => Hash::make($request->get('password'))            ]);
+            return [
+                'message' => 'Sucessfully Change user '.$user->name.' to Department_id '.$request->get('department_id'),
+                'result' => $user
             ];
         }
         return [
