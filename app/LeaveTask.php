@@ -25,4 +25,7 @@ class LeaveTask extends Model
     public function requester() {
         return $this->hasOne('App\User', 'id', 'requester_id');
     }
+    public function substituter() {
+        return $this->hasOne('App\User', 'id', 'substitute_id');
+    }
 }

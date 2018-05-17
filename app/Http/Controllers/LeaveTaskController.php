@@ -120,14 +120,14 @@ class LeaveTaskController extends Controller
 
             if($request->has('request')){
                 if($request->input('request') == 'pending'){
-                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'approved'){
-                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNotNull('approved_at')->whereNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->whereIn('leave_request_id' , $leave_request_array)->whereNotNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'rejected'){
-                    $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNotNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->whereIn('leave_request_id' , $leave_request_array)->whereNull('approved_at')->whereNotNull('rejected_at');
                 }
             }else{
-                $leave_tasks = LeaveTask::whereIn('leave_request_id' , $leave_request_array);
+                $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->whereIn('leave_request_id' , $leave_request_array);
             }
             $count = $leave_tasks->count();
             return [
@@ -151,14 +151,14 @@ class LeaveTaskController extends Controller
             $leave_request_id = $request->input('id');
             if($request->has('request')){
                 if($request->input('request') == 'pending'){
-                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'approved'){
-                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNotNull('approved_at')->whereNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->where(['leave_request_id' => $leave_request_id])->whereNotNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'rejected'){
-                    $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNotNull('rejected_at');
+                    $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->where(['leave_request_id' => $leave_request_id])->whereNull('approved_at')->whereNotNull('rejected_at');
                 }
             }else{
-                $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
+                $leave_tasks = LeaveTask::with('leave_request', 'task', 'substituter')->where(['leave_request_id' => $leave_request_id]);
             }
             
             return [
