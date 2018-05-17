@@ -100,7 +100,7 @@ class LeaveRequestController extends Controller
             return [
                 'message' => 'success',
                 'results' => [
-                    'leave-requests' => $leave_requests->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'leave_requests' => $leave_requests->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
                     'count' => $count
                 ],
                 'success' => true
