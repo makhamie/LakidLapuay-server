@@ -32,31 +32,39 @@ class LeaveTaskController extends Controller
 
     public function response_leave_task(Request $request) {
         $leave_task_id = $request->input('leave_task_id');
-        $leave_request = LeaveTask::find($leave_task_id);
+        $leave_task_request = LeaveTask::find($leave_task_id);
         $request_action = $request->get('action');
-        if($request_action == 'approved'){
-            $leave_request->update([
-                'approved_at' => now()
-            ]);
-            $all_leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request->id]);
-            $leave_tasks_of_leave_request = $all_leave_tasks->get();
-            $count = $all_leave_tasks->count();
-            $count_unreponsed_task = $all_leave_tasks->whereNull('approved_at')->whereNull('rejected_at')->count();
-            return [
-                'message' => 'Substituter accepted this request',
-                'results' => $leave_request,
-                'success' => true
-            ];
-        }else if($request_action == 'rejected'){
-            $leave_request->update([
-                'rejected_at' => now()
-            ]);
-            return [
-                'message' => 'Substituter rejected this request',
-                'results' => $leave_request,
-                'success' => true
-            ];
+        if($leave_task_request->rejected_at == null && $leave_task_request->approved_at == null){
+            if($request_action == 'approved'){
+                $leave_task_request->update([
+                    'approved_at' => now()
+                ]);
+                return [
+                    'message' => 'Substituter accepted this request',
+                    'results' => $leave_task_request,
+                    'success' => true
+                ];
+            }else if($request_action == 'rejected'){
+                $leave_task_request->update([
+                    'rejected_at' => now()
+                ]);
+                //Check reject leave request for rejection
+                // if at least one leave task -> reject this leave request
+                $leave_request = LeaveRequest::find($leave_task_request->leave_request_id);
+                $leave_request->update([
+                    'rejected_at' => now()
+                ]);
+                return [
+                    'message' => 'Substituter rejected this request',
+                    'results' => $leave_task_request,
+                    'leave_request' => $leave_request,
+                    'success' => true
+                ];
+            }
         }
+
+
+
         return [
             'message' => 'Action error',
             'success' => false
