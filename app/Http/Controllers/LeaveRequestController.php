@@ -107,14 +107,14 @@ class LeaveRequestController extends Controller
             for ($i = 0; $i<count($all_subordinate_id); $i++) {
                 $subordinate_id_array[$i] = $all_subordinate_id[$i]->subordinate_id;
             }
-            $leave_requests =  LeaveRequest::whereIn('subordinate_id', $subordinate_id_array);
+            $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array);
             if ($request->has('request')) {
                 if($request->input('request') == 'pending'){
-                    $leave_requests =  LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at');
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'approved'){
-                    $leave_requests =  LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNotNull('approved_at')->whereNull('rejected_at');
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNotNull('approved_at')->whereNull('rejected_at');
                 }else if($request->input('request') == 'rejected'){
-                    $leave_requests =  LeaveRequest::whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNotNull('rejected_at');
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNotNull('rejected_at');
                 }
             }
             

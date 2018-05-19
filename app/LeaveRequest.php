@@ -15,4 +15,8 @@ class LeaveRequest extends Model
         'finished_at',
         'rejected_at'
     ];
+
+    public function requester() {
+        return $this->hasOne('App\User', 'id', 'subordinate_id');
+    }
 }
