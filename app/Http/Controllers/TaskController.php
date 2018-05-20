@@ -165,4 +165,34 @@ class TaskController extends Controller
             'success' => false
         ];
     }
+    public function get_current_tasks(Request $request) {
+        $now = Carbon::now('Asia/Bangkok')->toDateString();
+        // $now = Carbon::now('Asia/Bangkok');
+        $subordinate = $request->user();        
+        $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                        ->whereDate('finished_at', '>', $now)
+                        ->get();
+        return [
+            'results' => $tasks,
+            'message' => 'Get current tasks',
+            'success' => true
+        ];
+    }
+
+    public function get_history_tasks(Request $request) {
+        $now = Carbon::now('Asia/Bangkok')->toDateString();
+        // $now = Carbon::now('Asia/Bangkok');
+        $subordinate = $request->user();        
+        $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                        ->whereDate('finished_at', '<', $now)
+                        ->get();
+        return [
+            'results' => $tasks,
+            'message' => 'Get history tasks',
+            'success' => true
+        ];
+    }
+    // public function get_history_tasks(Request $request) {
+    //     return Task::all();
+    // }
 }
