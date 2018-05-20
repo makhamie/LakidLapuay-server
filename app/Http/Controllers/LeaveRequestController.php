@@ -16,9 +16,14 @@ class LeaveRequestController extends Controller
         $startDate = $request->get('started_at');
         $finishDate = $request->get('finished_at');
         //เช็คว่าช่วงเวลาดังกล่าว User ไม่ได้มี leave request อยู่แล้ว
+        // $id_request = LeaveRequest::select('id')->whereBetween('started_at', array($startDate,$finishDate))
+        //             ->orWhereBetween('finished_at', array($startDate,$finishDate))->get();
         $user_request = LeaveRequest::whereBetween('started_at', array($startDate,$finishDate))
                     ->orWhereBetween('finished_at', array($startDate,$finishDate))->count();
         //และ User ไม่ได้เป็น substitute ของ Leave Task อันไหน 
+        // $substitute_request = LeaveTask::with('leave_request')
+        //                         ->where('substitute_id',$request_user->id)
+        //                         ->get();
         if($user_request == 0){
             $created = LeaveRequest::create([
                 'subordinate_id' => $request_user->id,
@@ -30,12 +35,17 @@ class LeaveRequestController extends Controller
             ]);
             return [
                 'message' => 'Create leave request successful',
+                // 'subsutitute' => $substitute_request,
+                // 'id_request' => $id_request,
                 'results' => $created,
                 'success' => true
             ];
         }
         return [
-            'message' => 'You has leave request in this range already',
+            // 'user request' => $user_request,
+            // 'count' => $substitute_request,
+            // 'id_request' => $id_request,
+            'message' => 'You has leave request in this range already or you are',
             'success' => false
         ];
     }
@@ -46,25 +56,37 @@ class LeaveRequestController extends Controller
         $leave_request_id = $request->get('leave_request_id');
         $leave_request = LeaveRequest::find($leave_request_id);
         $request_action = $request->get('action');
-        if($request_action == 'approved'){
-            $leave_request->update([
-                'approved_at' => now()
-            ]);
-            return [
-                'message' => 'Supervisor approved',
-                'results' => $leave_request,
-                'success' => true
-            ];
-        }else if($request_action == 'rejected'){
-            $leave_request->update([
-                'rejected_at' => now()
-            ]);
-            return [
-                'message' => 'Supervisor rejected',
-                'results' => $leave_request,
-                'success' => true
-            ];
+        if($leave_request->rejected_at == null && $leave_request->approved_at == null){
+            if($request_action == 'approved'){
+                $leave_request->update([
+                    'approved_at' => now()
+                ]);
+                // Check for update task of leave request
+                // update subordinate if of these task
+                $leave_tasks = LeaveTask::where(['leave_request_id' => $leave_request_id]);
+                for ($i = 0; $i<count($leave_tasks); $i++) {
+                    $task = Task::find($leave_tasks[$i]->task_id);
+                    $task->update([
+                        'subordinate_id' => $leave_tasks->substitute_id
+                    ]);
+                }
+                return [
+                    'message' => 'Supervisor approved',
+                    'results' => $leave_request,
+                    'success' => true
+                ];
+            }else if($request_action == 'rejected'){
+                $leave_request->update([
+                    'rejected_at' => now()
+                ]);
+                return [
+                    'message' => 'Supervisor rejected',
+                    'results' => $leave_request,
+                    'success' => true
+                ];
+            }
         }
+        
         return [
             'message' => 'Action error',
            'success' => false
