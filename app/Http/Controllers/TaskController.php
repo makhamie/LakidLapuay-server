@@ -20,18 +20,21 @@ class TaskController extends Controller
         }
         $now = Carbon::now('Asia/Bangkok')->toDateString();
         // $now = Carbon::now('Asia/Bangkok');
-        $subordinate = $request->user();
+        $user = $request->user();
+        if($user->role == 'subordinate'){
+            $user_tasks = Task::where(['subordinate_id' => $user->id]);
+        }else if($user->role == 'supervisor'){
+            $user_tasks = Task::where(['supervisor_id' => $user->id]);
+        }
+
         if($request->has('action')) {
             $request_action = $request->input('action');
             if($request_action == 'pending'){
-                $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                ->whereDate('started_at', '>', $now);
+                $tasks = $user_tasks->whereDate('started_at', '>', $now);
             }else if($request_action == 'doing'){
-                $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                ->whereDate('finished_at', '>', $now);
+                $tasks = $user_tasks->whereDate('finished_at', '>', $now);
             }else if($request_action == 'finished'){
-                $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                ->whereDate('finished_at', '<', $now);
+                $tasks = $user_tasks->whereDate('finished_at', '<', $now);
             }          
         }
         return [
