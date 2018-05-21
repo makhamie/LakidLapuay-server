@@ -17,16 +17,31 @@ class TaskController extends Controller
         $PER_PAGE = Config::get('constants.PER_PAGE');
         if ($request->has('page')) {
             $page = $request->input('page');
-            return [
-                'messages' => 'Get task successful',
-                'results' => [
-                    'tasks' => Task::skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
-                    'count' => Task::all()->count()
-                ],
-                'success' => true
-            ];
         }
-        return Task::all();
+        $now = Carbon::now('Asia/Bangkok')->toDateString();
+        // $now = Carbon::now('Asia/Bangkok');
+        $subordinate = $request->user();
+        if($request->has('action')) {
+            $request_action = $request->input('action');
+            if($request_action == 'pending'){
+                $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                ->whereDate('started_at', '>', $now);
+            }else if($request_action == 'doing'){
+                $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                ->whereDate('finished_at', '>', $now);
+            }else if($request_action == 'finished'){
+                $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                ->whereDate('finished_at', '<', $now);
+            }          
+        }
+        return [
+            'results' => [
+                'tasks' => $tasks->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                'count' => $tasks->count()
+            ],
+            'message' => 'Get history tasks',
+            'success' => true
+        ];
     }
 
     public function show($id)
@@ -165,33 +180,7 @@ class TaskController extends Controller
             'success' => false
         ];
     }
-    public function get_current_tasks(Request $request) {
-        $now = Carbon::now('Asia/Bangkok')->toDateString();
-        // $now = Carbon::now('Asia/Bangkok');
-        $subordinate = $request->user();        
-        $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                        ->whereDate('finished_at', '>', $now)
-                        ->get();
-        return [
-            'results' => $tasks,
-            'message' => 'Get current tasks',
-            'success' => true
-        ];
-    }
 
-    public function get_history_tasks(Request $request) {
-        $now = Carbon::now('Asia/Bangkok')->toDateString();
-        // $now = Carbon::now('Asia/Bangkok');
-        $subordinate = $request->user();        
-        $tasks = Task::where(['subordinate_id' => $subordinate->id])
-                        ->whereDate('finished_at', '<', $now)
-                        ->get();
-        return [
-            'results' => $tasks,
-            'message' => 'Get history tasks',
-            'success' => true
-        ];
-    }
     // public function get_history_tasks(Request $request) {
     //     return Task::all();
     // }

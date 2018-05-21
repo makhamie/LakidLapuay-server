@@ -55,8 +55,6 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get('/tasks/{id}', 'TaskController@show');
   Route::post('/task', 'TaskController@store');
   Route::put('/task/update-task', 'TaskController@update_task');
-  Route::get('/current-tasks', 'TaskController@get_current_tasks');
-  Route::get('/history-tasks', 'TaskController@get_history_tasks');
   
   // LeaveRequest routes
   Route::post('/leave-request', 'LeaveRequestController@store');
