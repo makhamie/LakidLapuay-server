@@ -31,10 +31,17 @@ class TaskController extends Controller
             $request_action = $request->input('action');
             if($request_action == 'pending'){
                 $tasks = $user_tasks->whereDate('started_at', '>', $now);
-            }else if($request_action == 'doing'){
-                $tasks = $user_tasks->whereDate('finished_at', '>', $now);
             }else if($request_action == 'finished'){
                 $tasks = $user_tasks->whereDate('finished_at', '<', $now);
+            }else if($request_action == 'doing'){
+                $tasks = $user_tasks->whereDate('started_at', '<=', $now)->whereDate('finished_at', '>=', $now);
+
+                // $tasks = Task::where(['subordinate_id' => $subordinate->id])
+                //     ->where(function ($query) use ($startDate,$finishDate){
+                //         $query->whereBetween('started_at',array($startDate,$finishDate))
+                //         ->orWhereBetween('finished_at',array($startDate,$finishDate));
+                //     });
+
             }          
         }
         return [
