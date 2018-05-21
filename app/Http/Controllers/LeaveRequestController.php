@@ -134,6 +134,49 @@ class LeaveRequestController extends Controller
         ];
     }
 
+    public function get_leave_requests_by_admin(Request $request) {
+        $PER_PAGE = Config::get('constants.PER_PAGE');
+        $page = 1;
+        $count = 0;
+        if ($request->has('page')) {
+            $page = $request->input('page');
+        }
+        $user = $request->user();
+        if($user->role == 'admin') {
+            $supervisor_id = $request->input('id');
+            $all_subordinate_id = Relation::select('subordinate_id')->where(['supervisor_id' => $supervisor_id])->get();
+            $subordinate_id_array = [];
+            for ($i = 0; $i<count($all_subordinate_id); $i++) {
+                $subordinate_id_array[$i] = $all_subordinate_id[$i]->subordinate_id;
+            }
+            $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array);
+            if ($request->has('request')) {
+                if($request->input('request') == 'pending'){
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'approved'){
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNotNull('approved_at')->whereNull('rejected_at');
+                }else if($request->input('request') == 'rejected'){
+                    $leave_requests =  LeaveRequest::with('requester')->whereIn('subordinate_id', $subordinate_id_array)->whereNull('approved_at')->whereNotNull('rejected_at');
+                }
+            }
+            
+            $count = $leave_requests->count();
+            return [
+                'message' => 'success',
+                'results' => [
+                    'leave_requests' => $leave_requests->skip(($page-1)*$PER_PAGE)->take($PER_PAGE)->get(),
+                    'count' => $count
+                ],
+                'success' => true
+            ];
+        }
+        return [
+            'message' => 'Need supervisor privilege aaa',
+            'success' => false
+        ];
+    }
+
+
     // public function get_substitute_request(Request $request) {
         
     // }
