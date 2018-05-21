@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::put('/response-leave-request', 'LeaveRequestController@response_leave_request');
   //Get all leave request of this supervisor
   Route::get('/get-leave-requests', 'LeaveRequestController@get_leave_requests');
+  Route::get('/admin/get-leave-requests', 'LeaveRequestController@get_leave_requests_by_admin');
 
 
   // LeaveTask routes
