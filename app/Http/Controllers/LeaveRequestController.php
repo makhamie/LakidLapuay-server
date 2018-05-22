@@ -16,35 +16,25 @@ class LeaveRequestController extends Controller
         $startDate = $request->get('started_at');
         $finishDate = $request->get('finished_at');
         //เช็คว่าช่วงเวลาดังกล่าว User ไม่ได้มี leave request อยู่แล้ว
-        // $id_request = LeaveRequest::select('id')->whereBetween('started_at', array($startDate,$finishDate))
-        //             ->orWhereBetween('finished_at', array($startDate,$finishDate))->get();
         $user_request = LeaveRequest::whereBetween('started_at', array($startDate,$finishDate))
                     ->orWhereBetween('finished_at', array($startDate,$finishDate))->count();
         //และ User ไม่ได้เป็น substitute ของ Leave Task อันไหน 
-        $substitute_request = LeaveTask::where('substitute_id',$request_user->id)
-                                ->get();
-        if($user_request == 0){
+        $same_period_requests = LeaveRequest::where('subordinate_id',$request_user->id)->whereBetween('started_at', array($startDate,$finishDate))
+                    ->orWhereBetween('finished_at', array($startDate,$finishDate))->count();
+        if($user_request == 0 && $same_period_requests == 0){
             $created = LeaveRequest::create([
-                // 'subordinate_id' => $request_user->id,
-                // 'reason' => $request->get('reason'),
-                // // 'approved_at' => $request->get('approved_at'),
-                // 'started_at' => $request->get('started_at'),
-                // 'finished_at' => $request->get('finished_at'),
-                // 'rejected_at' => $request->get('rejected_at')
+                'subordinate_id' => $request_user->id,
+                'reason' => $request->get('reason'),
+                'started_at' => $request->get('started_at'),
+                'finished_at' => $request->get('finished_at'),
             ]);
             return [
                 'message' => 'Create leave request successful',
-                'subsutitute' => $substitute_request,
-                // 'id_request' => $id_request,
                 'results' => $created,
                 'success' => true
             ];
         }
         return [
-            // 'user request' => $user_request,
-            // 'count' => $substitute_request,
-            // 'id_request' => $id_request,
-            'subsutitute' => $substitute_request,
             'message' => 'You has leave request in this range already or you are',
             'success' => false
         ];
