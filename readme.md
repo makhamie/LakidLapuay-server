@@ -58,27 +58,6 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-# Install & set development environment
-For easiest way to set up is to use any mysql + php + any web server management (xampp, etc.). In this set up sequence, XAMPP is selected to be php, mysql and web server for development.
-1. Go to your htdocs of your local XAMPP and use this command
-```
-git clone https://github.com/makhamie/LakidLapuay-server.git
-```
-2. Enter project LakidLapuay-server directory
-```
-cd LakidLapuay-server
-```
-3. To build and run laravel server
-```
-php artisan serve
-```
-default port for laravel project is ```:8000```.  
-To specific laravel port use this build command instead
-```
-php artisan serve --port=YOURPORT
-```
-
-
 # Requirements
   # front-end
   * install npm version 3.10 (or upper)
