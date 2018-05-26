@@ -17,6 +17,7 @@
   * create .env file like this [link](https://drive.google.com/file/d/1oAzMJVL3wji7CXv0kYyxyV5YcYSZBC0g/view)
 
 # How to run the project
+```
 # run back-end server
 php artisan serve
 # migrate database
